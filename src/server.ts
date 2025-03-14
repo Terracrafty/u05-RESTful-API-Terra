@@ -1,6 +1,8 @@
-import express, {Express, Request, Response} from "express";
-import mongoose, {Schema, model, connect} from "mongoose";
-import {load} from "ts-dotenv";
+import express, { Express, Request, Response } from "express";
+import mongoose, { Schema, model, connect } from "mongoose";
+import { load } from "ts-dotenv";
+import { createUser } from "../src/controllers/UserController"
+import bodyParser, { BodyParser } from "body-parser";
 
 const env = load({
     PORT:Number,
@@ -12,16 +14,15 @@ const env = load({
 
 const app:Express = express();
 
-app.get("/", (req:Request, res:Response) => {
-    res.send("Hello World!");
-});
-
-app.listen(env.PORT, () => {
-    console.log(`Server running on port ${env.PORT}`);
-});
+app.post("/users", bodyParser.json(), createUser);
 
 async function main() {
-    await mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`);
+    await mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/pfapi?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`);
+    console.log("Successfully connected to MongoDB");
+    
+    app.listen(env.PORT, () => {
+        console.log(`Server running on port ${env.PORT}`);
+    });
 }
 
 main().catch(err => console.log(err));
