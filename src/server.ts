@@ -17,7 +17,7 @@ const app:Express = express();
 app.post("/users", bodyParser.json(), createUser);
 
 async function main() {
-    await mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/pfapi?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`);
+    await mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/mhapi?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`);
     console.log("Successfully connected to MongoDB");
     
     app.listen(env.PORT, () => {
