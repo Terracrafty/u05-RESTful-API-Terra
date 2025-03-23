@@ -11,18 +11,11 @@ const env = load({
 const createUser = async (req:Request, res:Response) => {
     try {
         const {name, email, password} = req.body;
-        if (await User.exists({ "email": email })) {
-            throw new Error("Email already in use");
-        }
         const salt = randomBytes(128).toString("base64");
-        const hashedPassword = createHash("sha256")
-            .update(password + salt)
-            .digest("hex");
         const newUser = new User({
             name: name,
             email: email,
-            password: hashedPassword,
-            salt: salt,
+            password: password,
         });
         await newUser.save();
         res.status(201).json(newUser).end();
@@ -56,4 +49,43 @@ const login = async (req:Request, res:Response) => {
     }
 };
 
-export {createUser, login};
+const indexUser = async (req:Request, res:Response) => {
+    try {
+        const users = await User.find({}, "name email");
+        res.status(200).json({ users }).end();
+    } catch(e) {
+        const error = (e as Error);
+        res.status(500).json({ error: error.message }).end();
+    }
+};
+
+const viewUser = async (req:Request, res:Response) => {
+    res.status(501).json({ error: "not implemented, sorry" }).end();
+};
+
+const editUser = async (req:Request, res:Response) => {
+    try {
+        const {name, email, password} = req.body;
+        const user = await User.findById(req.params.id).orFail(new Error("User not found"));
+        if (name) {
+            user.name = name;
+        }
+        if (email) {
+            user.email = email;
+        }
+        if (password) {
+            user.password = password;
+        }
+        await user.save();
+        res.status(200).json(user).end();
+    } catch (e) {
+        const error = (e as Error);
+        if (error.message == "User not found") {
+            res.status(404).json({ error: error });
+        } else {
+            res.status(500).json({ error: error });
+        }
+    }
+};
+
+export {createUser, login, indexUser, viewUser, editUser};
