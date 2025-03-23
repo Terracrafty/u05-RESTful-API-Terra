@@ -13,19 +13,8 @@ const userSchema = new Schema<IUser>({
     name: { type:String, required:true },
     email: { type:String, required:true, unique:true },
     password: { type:String, required:true },
-    salt: { type:String, required:true }
+    salt: { type:String, required:false }
 });
-
-const User = model<IUser>('User', userSchema);
-
-userSchema.path("email").validate(async function(value) { //unique email validation
-    try {
-        const count = await User.countDocuments({ "email": value });
-        return (count == 0);
-    } catch {
-        return false;
-    }
-}, "Email already in use");
 
 userSchema.pre("save", function(next) { //password hashing
     console.log("one");
@@ -40,5 +29,19 @@ userSchema.pre("save", function(next) { //password hashing
     }
     next();
 });
+
+const User = model<IUser>('User', userSchema);
+
+userSchema.path("email").validate(async function(value) { //unique email validation
+    if (!this.isNew && !this.isModified("email")) {
+        return true;
+    }
+    try {
+        const count = await User.countDocuments({ "email": value });
+        return (count == 0);
+    } catch {
+        return false;
+    }
+}, "Email already in use");
 
 export {User};
