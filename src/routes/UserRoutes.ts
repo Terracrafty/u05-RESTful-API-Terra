@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bodyParser from "body-parser";
 import {createUser, login, indexUser, editUser, deleteUser, viewUser} from "../controllers/UserController"
+import { authorize } from "../middleware/auth";
 
 const userRouter = Router();
 
@@ -10,10 +11,10 @@ userRouter.post("/login", bodyParser.json(), login);
 
 userRouter.get("/", indexUser);
 
-userRouter.get("/:id", viewUser);
+userRouter.get("/:id", authorize, viewUser);
 
-userRouter.patch("/:id", bodyParser.json(), editUser);
+userRouter.patch("/:id", bodyParser.json(), authorize, editUser);
 
-userRouter.delete("/:id", deleteUser);
+userRouter.delete("/:id", authorize, deleteUser);
 
 export {userRouter};
