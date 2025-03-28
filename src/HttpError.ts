@@ -20,6 +20,10 @@ class HttpError extends Error {
                 status = 400;
                 message = error.message;
                 break;
+            case "TokenExpiredError":
+                status = 403;
+                message = "Token expired";
+                break;
             default:
                 status = 500;
                 message = "it's fucked";

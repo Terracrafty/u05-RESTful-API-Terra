@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, model, Types } from "mongoose";
 
 interface IWeapon {
     name:string;
@@ -11,16 +11,13 @@ interface IWeapon {
     slots_1:number;
     slots_2:number;
     slots_3:number;
-    skills: Array<{
-        name:string;
-        level:number;
-    }>;
+    skills: Array<{ skill: Types.ObjectId, level: number }>;
     max_sharpness?: string;
 }
 
 type WeaponHydratedDocument = mongoose.HydratedDocument<
     IWeapon,
-    { skills: mongoose.HydratedArraySubdocument<{ name:string, level:number }> }
+    { skills: mongoose.HydratedArraySubdocument<{ skill: Types.ObjectId, level: number }> }
 >;
 
 type WeaponModelType = mongoose.Model<
@@ -29,7 +26,7 @@ type WeaponModelType = mongoose.Model<
     {},
     {},
     WeaponHydratedDocument
->
+>;
 
 const weaponSchema = new Schema<
     IWeapon,
@@ -52,11 +49,8 @@ const weaponSchema = new Schema<
     slots_1: { type:Number, required:true},
     slots_2: { type:Number, required:true},
     slots_3: { type:Number, required:true},
-    skills: [{
-        name: { type:String, required:true },
-        level: { type:Number, required:true }
-    }],
-    max_sharpness: { type:String, required:false}
+    skills: [{ skill: { type: Schema.Types.ObjectId, ref: "Skill" }, level: Number }],
+    max_sharpness: { type:String, required:false }
 });
 
 const Weapon = model<IWeapon, WeaponModelType>("Weapon", weaponSchema);

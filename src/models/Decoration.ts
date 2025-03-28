@@ -1,17 +1,14 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, model, Types } from "mongoose";
 
 interface IDecoration {
-    name:string,
-    size:number,
-    skills: Array<{
-        name:string,
-        level:number
-    }>
+    name:string;
+    size:number;
+    skills: Array<{ skill:Types.ObjectId, level: number }>;
 }
 
 type DecorationHydratedDocument = mongoose.HydratedDocument<
     IDecoration,
-    { skills: mongoose.HydratedArraySubdocument<{ name:string, level:number }> }
+    { skills: mongoose.HydratedArraySubdocument<{ skill:Types.ObjectId, level:number }> }
 >;
 
 type DecorationModelType = mongoose.Model<
@@ -35,10 +32,7 @@ const decorationSchema = new Schema<
 >({
     name: { type:String, required:true},
     size: { type:Number, required:true},
-    skills: [{
-        name: { type:String, required:true },
-        level: { type:Number, required:true }
-    }]
+    skills: [{ skill: { type: Schema.Types.ObjectId, ref: "Skill" }, level: Number }]
 });
 
 const Decoration = model<IDecoration, DecorationModelType>("Decoration", decorationSchema);

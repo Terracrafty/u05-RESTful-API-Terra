@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, model, Types } from "mongoose";
 
 interface IArmor {
     name:string;
@@ -12,15 +12,12 @@ interface IArmor {
     slots_1:number;
     slots_2:number;
     slots_3:number;
-    skills: Array<{
-        name:string;
-        level:number;
-    }>
+    skills: Array<{ skill: Types.ObjectId, level: number }>;
 }
 
 type ArmorHydratedDocument = mongoose.HydratedDocument<
     IArmor,
-    { skills: mongoose.HydratedArraySubdocument<{ name:string, level:number }> }
+    { skills: mongoose.HydratedArraySubdocument<{ skill: Types.ObjectId, level: number }> }
 >;
 
 type ArmorModelType = mongoose.Model<
@@ -53,8 +50,9 @@ const armorSchema = new Schema<
     slots_1: { type:Number, required:true },
     slots_2: { type:Number, required:true },
     slots_3: { type:Number, required:true },
-    skills: [{
-        name: { type:String, required:true },
-        level: { type:Number, required:true }
-    }],
+    skills: [{ skill: { type:Schema.Types.ObjectId, ref: "Skill" }, level: Number}],
 });
+
+const Armor = model<IArmor, ArmorModelType>("Armor", armorSchema);
+
+export {Armor};

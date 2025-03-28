@@ -6,10 +6,10 @@ interface ISkill {
 }
 
 const skillSchema = new Schema<ISkill>({
-    name: { type:String, required:true},
-    max_level: { type:Number, required:true},
+    name: { type:String, required:true },
+    max_level: { type:Number, required:true },
 });
 
 const Skill = model<ISkill>("Skill", skillSchema);
 
-export {Skill};
+export { ISkill, Skill };
