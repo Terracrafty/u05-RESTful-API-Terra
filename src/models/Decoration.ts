@@ -1,4 +1,5 @@
 import mongoose, { Schema, model, Types } from "mongoose";
+import { ISkill, Skill } from "./Skill";
 
 interface IDecoration {
     name:string;
@@ -32,7 +33,12 @@ const decorationSchema = new Schema<
 >({
     name: { type:String, required:true},
     size: { type:Number, required:true},
-    skills: [{ skill: { type: Schema.Types.ObjectId, ref: "Skill" }, level: Number }]
+    skills: [{ skill: { type: Schema.Types.ObjectId, ref: Skill }, level: Number }]
+});
+
+decorationSchema.pre(["find", "findOne"], function(next) {
+    this.populate<{ skill: ISkill }>("skills.skill");
+    next();
 });
 
 const Decoration = model<IDecoration, DecorationModelType>("Decoration", decorationSchema);

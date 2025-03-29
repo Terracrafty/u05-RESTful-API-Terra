@@ -1,4 +1,5 @@
 import mongoose, { Schema, model, Types } from "mongoose";
+import { ISkill, Skill } from "./Skill";
 
 interface IArmor {
     name:string;
@@ -50,7 +51,12 @@ const armorSchema = new Schema<
     slots_1: { type:Number, required:true },
     slots_2: { type:Number, required:true },
     slots_3: { type:Number, required:true },
-    skills: [{ skill: { type:Schema.Types.ObjectId, ref: "Skill" }, level: Number}],
+    skills: [{ skill: { type:Schema.Types.ObjectId, ref: Skill }, level: Number}],
+});
+
+armorSchema.pre(["find", "findOne"], function(next) {
+    this.populate<{ skill: ISkill }>("skills.skill");
+    next();
 });
 
 const Armor = model<IArmor, ArmorModelType>("Armor", armorSchema);

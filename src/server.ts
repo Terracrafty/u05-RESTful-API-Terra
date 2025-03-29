@@ -1,5 +1,5 @@
-import express, { Express, Request, Response } from "express";
-import mongoose, { Schema, model, connect } from "mongoose";
+import express, { Express } from "express";
+import mongoose from "mongoose";
 import { load } from "ts-dotenv";
 import { mainRouter } from "./routes/MainRoutes";
 

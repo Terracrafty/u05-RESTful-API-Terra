@@ -27,6 +27,7 @@ class HttpError extends Error {
             default:
                 status = 500;
                 message = "it's fucked";
+                console.log(error);
         }
 
         return new HttpError(status, message);

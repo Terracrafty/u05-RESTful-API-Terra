@@ -17,9 +17,7 @@ const userSchema = new Schema<IUser>({
 });
 
 userSchema.pre("save", function(next) { //password hashing
-    console.log("one");
     if (this.isModified("password") || this.isNew) {
-        console.log("two");
         const salt = randomBytes(128).toString("base64");
         const hashedPassword = createHash("sha256")
             .update(this.password + salt)
