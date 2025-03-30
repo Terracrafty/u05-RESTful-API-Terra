@@ -5,6 +5,8 @@ import { mainRouter } from "./routes/MainRoutes";
 
 const env = load({
     PORT:Number,
+    MONGOSH_PORT:Number,
+    LOCAL:Boolean,
     DB_USER:String,
     DB_PASSWORD:String,
     DB_CLUSTER:String,
@@ -16,8 +18,9 @@ const app:Express = express();
 app.use("/api", mainRouter);
 
 async function main() {
-    await mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/mhapi?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`);
-    console.log("Successfully connected to MongoDB");
+    const connstring:string = env.LOCAL ? `mongodb://localhost:${env.MONGOSH_PORT}/${env.DB_APPNAME}` : `mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/${env.DB_APPNAME}?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`
+    await mongoose.connect(connstring);
+    console.log(env.LOCAL ? `Connected to local MongoDB at port ${env.MONGOSH_PORT}` : "Successfully connected to MongoDB");
     
     app.listen(env.PORT, () => {
         console.log(`Server running on port ${env.PORT}`);

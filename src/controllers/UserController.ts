@@ -43,7 +43,7 @@ const login = async (req:Request, res:Response) => {
 const indexUser = async (req:Request, res:Response) => {
     try {
         const users = await User.find({}, "_id name");
-        res.status(200).json({ users }).end();
+        res.status(200).json(users).end();
     } catch(e) {
         handleHttpError(e, res);
     }
