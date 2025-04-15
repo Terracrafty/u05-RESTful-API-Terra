@@ -19,7 +19,7 @@ Displays ID and username for all existing users.
 `GET .../api/users`
 
 #### Response: 
-JSON object containing array containing objects representing all users. 
+Array containing JSON objects representing all users. 
 
     {
         "users": [
