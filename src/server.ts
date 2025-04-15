@@ -23,8 +23,8 @@ const corsOptions = {
 
 };
 
-app.use("/api", mainRouter);
 app.use(cors(corsOptions));
+app.use("/api", mainRouter);
 
 async function main() {
     const connstring:string = env.LOCAL ? `mongodb://localhost:${env.MONGOSH_PORT}/${env.DB_APPNAME}` : `mongodb+srv://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_CLUSTER}.mongodb.net/${env.DB_APPNAME}?retryWrites=true&w=majority&appName=${env.DB_APPNAME}`
